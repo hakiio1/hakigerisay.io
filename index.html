@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GeriSay - İş yönetimi ve zaman takibi uygulaması">
+    <meta name="theme-color" content="#1e2d3b">
+    <title>GeriSay - İş ve Zaman Yönetimi</title>
+    <link rel="icon" href="images/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #3a86ff;
+            --primary-light: #4a94ff;
+            --primary-dark: #2a70e0;
+            --secondary: #38b000;
+            --secondary-light: #49c21a;
+            --secondary-dark: #2a9000;
+            --warning: #ffbe0b;
+            --warning-light: #ffca3a;
+            --warning-dark: #f0b000;
+            --error: #ff595e;
+            --error-light: #ff7a7e;
+            --error-dark: #e0484d;
+            --background: #f8f9fa;
+            --background-dark: #131c26;
+            --surface: #ffffff;
+            --surface-dark: #1d2b3a;
+            --card-dark: #263a4e;
+            --on-primary: #ffffff;
+            --on-secondary: #ffffff;
+            --on-background: #333333;
+            --on-background-dark: #f8f9fa;
+            --on-surface: #333333;
+            --on-surface-dark: #f8f9fa;
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--background-dark);
+            color: var(--on-background-dark);
+            min-height: 100vh;
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.6;
+            transition: var(--transition);
+            padding-bottom: 2rem;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background-color: var(--surface-dark);
+            border-radius: var(--border-radius);
+            padding: 1.2rem 1.5rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 1rem;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--on-surface-dark);
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-container img {
+            height: 40px;
+            transition: var(--transition);
+        }
+
+        .logo-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .btn {
+            padding: 0.7rem 1.4rem;
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn i {
+            font-size: 0.9em;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--on-primary);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(58, 134, 255, 0.25);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--on-secondary);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background-color: var(--secondary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(56, 176, 0, 0.25);
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: #2a3d4f;
+        }
+
+        .btn-warning:hover:not(:disabled) {
+            background-color: var(--warning-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 190, 11, 0.25);
+        }
+
+        .btn-danger {
+            background-color: var(--error);
+            color: var(--on-primary);
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background-color: var(--error-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 89, 94, 0.25);
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .board-column {
+            background-color: var(--surface-dark);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.2rem;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--transition);
+            max-height: calc(100vh - 150px);
+        }
+
+        .tasks-container {
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 0.5rem;
+            margin-right: -0.5rem;
+            min-height: 150px;
+        }
+
+        /* Scrollbar styling */
+        .tasks-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .tasks-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .tasks-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .tasks-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1rem;
+            position: sticky;
+            top: 0;
+            background-color: var(--surface-dark);
+            z-index: 5;
+        }
+
+        .column-header h2 {
+            font-size: 1.2rem;
+            color: var(--on-surface-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .column-header h2 i {
+            font-size: 0.9em;
+            color: var(--primary);
+        }
+
+        .column-count {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--on-surface-dark);
+            border-radius: 16px;
+            min-width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            padding: 0 0.5rem;
+            font-weight: 600;
+        }
+
+        .task-card {
+            background-color: var(--card-dark);
+            border-radius: var(--border-radius);
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            cursor: grab;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .task-card:active {
+            cursor: grabbing;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            align-items: flex-start;
+        }
+
+        .task-title {
+            font-weight: 600;
+            color: var(--on-surface-dark);
+            margin-right: 0.5rem;
+            word-break: break-word;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .task-priority {
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            min-width: 60px;
+            text-align: center;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow-sm);
+            white-space: nowrap;
+        }
+
+        .priority-low {
+            background-color: var(--secondary);
+            color: var(--on-secondary);
+        }
+
+        .priority-medium {
+            background-color: var(--warning);
+            color: #2a3d4f;
+        }
+
+        .priority-high {
+            background-color: var(--error);
+            color: var(--on-primary);
+        }
+
+        .task-description {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            gap: 0.5rem;
+        }
+
+        .task-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .task-meta i {
+            font-size: 0.9em;
+        }
+
+        .task-timer {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 0.8rem;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.3rem;
+            text-align: center;
+            color: var(--on-surface-dark);
+            font-weight: 600;
+            letter-spacing: 1px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--transition);
+        }
+
+        .task-timer.running {
+            color: var(--warning);
+            background-color: rgba(255, 190, 11, 0.1);
+            border-color: rgba(255, 190, 11, 0.2);
+            animation: pulse 1s infinite alternate;
+        }
+
+        .task-timer.completed {
+            color: var(--secondary);
+            background-color: rgba(56, 176, 0, 0.1);
+            border-color: rgba(56, 176, 0, 0.2);
+        }
+
+        .task-timer.ending {
+            color: var(--error);
+            background-color: rgba(255, 89, 94, 0.1);
+            border-color: rgba(255, 89, 94, 0.2);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        .task-timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+        }
+
+        .task-controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.8rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--surface-dark);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--on-surface-dark);
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .modal-close:hover {
+            color: var(--on-surface-dark);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--on-surface-dark);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--on-surface-dark);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.2);
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23fff' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .time-inputs {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .time-inputs .form-group {
+            flex: 1;
+        }
+
+        .time-inputs .form-control {
+            text-align: center;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 350px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.7rem 1rem 0.7rem 2.8rem;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: var(--surface-dark);
+            color: var(--on-surface-dark);
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .filters {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        .drag-over {
+            border: 2px dashed var(--primary);
+            background-color: rgba(58, 134, 255, 0.05);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+                top: 0.5rem;
+            }
+            
+            .logo-container {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .board {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .board-column {
+                max-height: none;
+            }
+            
+            .action-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-container {
+                max-width: none;
+            }
+            
+            .task-timer {
+                font-size: 1.1rem;
+            }
+            
+            .task-timer-controls, 
+            .task-controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+            
+            .time-inputs {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .board {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+            
+            .task-timer-controls {
+                flex-wrap: wrap;
+            }
+            
+            .time-inputs {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Tooltip styling */
+        [data-tooltip] {
+            position: relative;
+            cursor: help;
+        }
+
+        [data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.5rem 0.8rem;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.8rem;
+            white-space: nowrap;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.8rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 12px;
+            margin: 0.5rem 0;
+            font-weight: 500;
+            color: var(--on-surface-dark);
+        }
+
+        .status-running {
+            background-color: rgba(255, 190, 11, 0.2);
+            color: var(--warning);
+            border: 1px solid rgba(255, 190, 11, 0.3);
+        }
+
+        .status-completed {
+            background-color: rgba(56, 176, 0, 0.2);
+            color: var(--secondary);
+            border: 1px solid rgba(56, 176, 0, 0.3);
+        }
+
+        .status-pending {
+            background-color: rgba(58, 134, 255, 0.2);
+            color: var(--primary);
+            border: 1px solid rgba(58, 134, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-container">
+                <img src="images/logo.svg" alt="GeriSay Logo">
+                <h1>GeriSay</h1>
+            </div>
+            <button id="add-task-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Yeni Görev</button>
+        </header>
+
+        <div class="action-bar">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="task-search" placeholder="Görev ara...">
+            </div>
+            <div class="filters">
+                <select id="priority-filter" class="form-control">
+                    <option value="all">Tüm Öncelikler</option>
+                    <option value="high">Yüksek</option>
+                    <option value="medium">Orta</option>
+                    <option value="low">Düşük</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="board">
+            <div class="board-column" id="todo-column" data-status="todo">
+                <div class="column-header">
+                    <h2><i class="fas fa-clipboard-list"></i> Yapılacak</h2>
+                    <div class="column-count" id="todo-count">0</div>
+                </div>
+                <div class="tasks-container" id="todo-tasks">
+                    <!-- Tasks will be added here -->
+                </div>
+            </div>
+
+            <div class="board-column" id="in-progress-column" data-status="in-progress">
+                <div class="column-header">
+                    <h2><i class="fas fa-spinner"></i> Devam Ediyor</h2>
+                    <div class="column-count" id="in-progress-count">0</div>
+                </div>
+                <div class="tasks-container" id="in-progress-tasks">
+                    <!-- Tasks will be added here -->
+                </div>
+            </div>
+
+            <div class="board-column" id="done-column" data-status="done">
+                <div class="column-header">
+                    <h2><i class="fas fa-check-circle"></i> Tamamlandı</h2>
+                    <div class="column-count" id="done-count">0</div>
+                </div>
+                <div class="tasks-container" id="done-tasks">
+                    <!-- Tasks will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Task Modal -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Yeni Görev</h2>
+                <button class="modal-close" id="modal-close"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="task-form">
+                <input type="hidden" id="task-id">
+                <div class="form-group">
+                    <label for="task-title">Görev Başlığı</label>
+                    <input type="text" id="task-title" class="form-control" required placeholder="Görevin başlığını girin">
+                </div>
+                <div class="form-group">
+                    <label for="task-description">Açıklama</label>
+                    <textarea id="task-description" class="form-control" placeholder="Görev hakkında detaylı açıklama yazın"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="task-priority">Öncelik</label>
+                    <select id="task-priority" class="form-control">
+                        <option value="low">Düşük</option>
+                        <option value="medium" selected>Orta</option>
+                        <option value="high">Yüksek</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="task-assignee">Sorumlu</label>
+                    <input type="text" id="task-assignee" class="form-control" placeholder="Görevden sorumlu kişi">
+                </div>
+                <div class="form-group">
+                    <label for="task-due-date">Teslim Tarihi</label>
+                    <input type="date" id="task-due-date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Görev Süresi</label>
+                    <div class="time-inputs">
+                        <div class="form-group">
+                            <label for="task-hours">Saat</label>
+                            <input type="number" id="task-hours" class="form-control" min="0" max="99" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="task-minutes">Dakika</label>
+                            <input type="number" id="task-minutes" class="form-control" min="0" max="59" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="task-seconds">Saniye</label>
+                            <input type="number" id="task-seconds" class="form-control" min="0" max="59" value="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="delete-task-btn" style="display: none;"><i class="fas fa-trash-alt"></i> Sil</button>
+                    <button type="button" class="btn" id="cancel-btn">İptal</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Constants - Immutable application constants
+        const STORAGE_KEY = 'gerisay-tasks';
+        
+        const STATUS = Object.freeze({
+            TODO: 'todo',
+            IN_PROGRESS: 'in-progress',
+            DONE: 'done'
+        });
+        
+        const PRIORITY = Object.freeze({
+            LOW: 'low',
+            MEDIUM: 'medium',
+            HIGH: 'high'
+        });
+        
+        // Pure function: Format time unit with leading zeros
+        const formatTimeUnit = unit => String(unit).padStart(2, '0');
+        
+        // Pure function: Format time display
+        const formatTime = (hours, minutes, seconds) => 
+            `${formatTimeUnit(hours)}:${formatTimeUnit(minutes)}:${formatTimeUnit(seconds)}`;
+        
+        // Pure function: Calculate total seconds from hours, minutes, seconds
+        const calculateTotalSeconds = (hours, minutes, seconds) => 
+            (Number(hours) * 3600) + (Number(minutes) * 60) + Number(seconds);
+        
+        // Pure function: Convert seconds to hours, minutes, seconds
+        const secondsToTimeUnits = totalSeconds => {
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            return { hours, minutes, seconds };
+        };
+        
+        // Pure function: Get priority display text
+        const getPriorityText = priority => {
+            switch (priority) {
+                case PRIORITY.LOW: return 'Düşük';
+                case PRIORITY.MEDIUM: return 'Orta';
+                case PRIORITY.HIGH: return 'Yüksek';
+                default: return 'Orta';
+            }
+        };
+        
+        // Pure function: Create new task object from form data
+        const createTaskObject = formData => {
+            const duration = {
+                hours: Number(formData.hours) || 0,
+                minutes: Number(formData.minutes) || 0,
+                seconds: Number(formData.seconds) || 0
+            };
+            
+            const totalSeconds = calculateTotalSeconds(
+                duration.hours, 
+                duration.minutes, 
+                duration.seconds
+            );
+            
+            return {
+                id: formData.id || Date.now().toString(),
+                title: formData.title,
+                description: formData.description || '',
+                priority: formData.priority,
+                status: formData.status || STATUS.TODO,
+                assignee: formData.assignee || '',
+                dueDate: formData.dueDate || '',
+                duration: duration,
+                totalSeconds: totalSeconds,
+                remainingSeconds: totalSeconds,
+                timerRunning: false,
+                timerCompleted: false,
+                createdAt: formData.createdAt || new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+        };
+        
+        // Pure function: Update task in array
+        const updateTask = (tasks, updatedTask) => 
+            tasks.map(task => task.id === updatedTask.id ? updatedTask : task);
+        
+        // Pure function: Remove task from array
+        const removeTask = (tasks, taskId) => 
+            tasks.filter(task => task.id !== taskId);
+        
+        // Pure function: Filter tasks by search and priority
+        const filterTasks = (tasks, searchTerm, priorityFilter) => {
+            return tasks.filter(task => {
+                const matchesSearch = !searchTerm || 
+                    task.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    task.description.toLowerCase().includes(searchTerm.toLowerCase());
+                    
+                const matchesPriority = priorityFilter === 'all' || task.priority === priorityFilter;
+                
+                return matchesSearch && matchesPriority;
+            });
+        };
+        
+        // Pure function: Group tasks by status
+        const groupTasksByStatus = tasks => {
+            return Object.values(STATUS).reduce((acc, status) => {
+                acc[status] = tasks.filter(task => task.status === status);
+                return acc;
+            }, {});
+        };
+        
+        // Pure function: Create task card HTML
+        const createTaskCardHTML = task => {
+            const { hours, minutes, seconds } = secondsToTimeUnits(task.remainingSeconds);
+            const timerDisplay = formatTime(hours, minutes, seconds);
+            const hasTimer = task.totalSeconds > 0;
+            const formattedDate = task.dueDate ? 
+                new Date(task.dueDate).toLocaleDateString('tr-TR') : '';
+            
+            // Status badge
+            let statusBadge = '';
+            if (task.timerRunning) {
+                statusBadge = '<span class="status-badge status-running"><i class="fas fa-play"></i> Devam Ediyor</span>';
+            } else if (task.timerCompleted) {
+                statusBadge = '<span class="status-badge status-completed"><i class="fas fa-check"></i> Tamamlandı</span>';
+            } else if (hasTimer) {
+                statusBadge = '<span class="status-badge status-pending"><i class="fas fa-pause"></i> Bekliyor</span>';
+            }
+            
+            return `
+                <div class="task-header">
+                    <h3 class="task-title">${task.title}</h3>
+                    <span class="task-priority priority-${task.priority}">
+                        ${getPriorityText(task.priority)}
+                    </span>
+                </div>
+                <div class="task-description">${task.description}</div>
+                ${hasTimer ? `
+                <div class="task-timer ${task.timerRunning ? 'running' : ''} ${task.timerCompleted ? 'completed' : ''} ${(task.timerRunning && task.remainingSeconds <= 10) ? 'ending' : ''}" id="timer-${task.id}">
+                    ${timerDisplay}
+                </div>
+                ${statusBadge}
+                <div class="task-timer-controls">
+                    <button class="btn btn-primary btn-sm" onclick="startTaskTimer('${task.id}')" ${task.timerRunning || task.timerCompleted ? 'disabled' : ''}>
+                        <i class="fas fa-play"></i> Başlat
+                    </button>
+                    <button class="btn btn-warning btn-sm" onclick="pauseTaskTimer('${task.id}')" ${!task.timerRunning ? 'disabled' : ''}>
+                        <i class="fas fa-pause"></i> Duraklat
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="resetTaskTimer('${task.id}')">
+                        <i class="fas fa-redo"></i> Sıfırla
+                    </button>
+                </div>` : ''}
+                <div class="task-meta">
+                    ${task.assignee ? `<span><i class="fas fa-user"></i> ${task.assignee}</span>` : ''}
+                    ${task.dueDate ? `<span><i class="fas fa-calendar-alt"></i> ${formattedDate}</span>` : ''}
+                    <span><i class="fas fa-clock"></i> ${formatDate(task.createdAt)}</span>
+                </div>
+                <div class="task-controls">
+                    <button class="btn btn-secondary btn-sm" onclick="editTask('${task.id}')">
+                        <i class="fas fa-edit"></i> Düzenle
+                    </button>
+                </div>
+            `;
+        };
+        
+        // Pure function: Format date
+        const formatDate = dateString => {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('tr-TR', { 
+                day: 'numeric', 
+                month: 'short',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        };
+        
+        // DOM Elements - References to DOM elements that don't change
+        const elements = {
+            addTaskBtn: document.getElementById('add-task-btn'),
+            taskModal: document.getElementById('task-modal'),
+            modalClose: document.getElementById('modal-close'),
+            cancelBtn: document.getElementById('cancel-btn'),
+            taskForm: document.getElementById('task-form'),
+            taskSearch: document.getElementById('task-search'),
+            priorityFilter: document.getElementById('priority-filter'),
+            deleteTaskBtn: document.getElementById('delete-task-btn'),
+            modalTitle: document.getElementById('modal-title'),
+            taskContainers: {
+                [STATUS.TODO]: document.getElementById('todo-tasks'),
+                [STATUS.IN_PROGRESS]: document.getElementById('in-progress-tasks'),
+                [STATUS.DONE]: document.getElementById('done-tasks')
+            },
+            columnCounts: {
+                [STATUS.TODO]: document.getElementById('todo-count'),
+                [STATUS.IN_PROGRESS]: document.getElementById('in-progress-count'),
+                [STATUS.DONE]: document.getElementById('done-count')
+            }
+        };
+        
+        // Application State (with closure to prevent direct external access)
+        const createAppState = () => {
+            // Private state
+            let tasks = [];
+            let timers = new Map(); // Store timers using Map for O(1) lookup
+            
+            // Public interface with methods to interact with state
+            return {
+                // Get all tasks (returns a copy to prevent direct mutation)
+                getTasks: () => [...tasks],
+                
+                // Get task by ID
+                getTaskById: id => tasks.find(task => task.id === id),
+                
+                // Initialize tasks from storage
+                initTasks: (storedTasks) => {
+                    tasks = storedTasks;
+                    return [...tasks];
+                },
+                
+                // Add a new task
+                addTask: (task) => {
+                    tasks = [...tasks, task];
+                    return [...tasks];
+                },
+                
+                // Update a task
+                updateTask: (updatedTask) => {
+                    tasks = updateTask(tasks, updatedTask);
+                    return [...tasks];
+                },
+                
+                // Remove a task
+                removeTask: (taskId) => {
+                    tasks = removeTask(tasks, taskId);
+                    return [...tasks];
+                },
+                
+                // Get timer for a task
+                getTimer: (taskId) => timers.get(taskId),
+                
+                // Set timer for a task
+                setTimer: (taskId, timer) => {
+                    timers.set(taskId, timer);
+                },
+                
+                // Clear timer for a task
+                clearTimer: (taskId) => {
+                    const timer = timers.get(taskId);
+                    if (timer) {
+                        clearInterval(timer);
+                        timers.delete(taskId);
+                    }
+                },
+                
+                // Clear all timers
+                clearAllTimers: () => {
+                    timers.forEach(timer => clearInterval(timer));
+                    timers.clear();
+                }
+            };
+        };
+        
+        // Create application state
+        const appState = createAppState();
+        
+        // Load tasks from local storage
+        const loadTasks = () => {
+            try {
+                const storedTasks = localStorage.getItem(STORAGE_KEY);
+                if (storedTasks) {
+                    const parsedTasks = JSON.parse(storedTasks);
+                    appState.initTasks(parsedTasks);
+                    
+                    // Restart active timers
+                    parsedTasks.forEach(task => {
+                        if (task.timerRunning) {
+                            startTaskTimer(task.id);
+                        }
+                    });
+                }
+                
+                renderTasks();
+            } catch (error) {
+                console.error('Error loading tasks:', error);
+            }
+        };
+        
+        // Save tasks to local storage
+        const saveTasks = () => {
+            try {
+                const tasks = appState.getTasks();
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+            } catch (error) {
+                console.error('Error saving tasks:', error);
+            }
+        };
+        
+        // Get form data as object
+        const getFormData = () => {
+            return {
+                id: document.getElementById('task-id').value,
+                title: document.getElementById('task-title').value.trim(),
+                description: document.getElementById('task-description').value.trim(),
+                priority: document.getElementById('task-priority').value,
+                assignee: document.getElementById('task-assignee').value.trim(),
+                dueDate: document.getElementById('task-due-date').value,
+                hours: document.getElementById('task-hours').value,
+                minutes: document.getElementById('task-minutes').value,
+                seconds: document.getElementById('task-seconds').value
+            };
+        };
+        
+        // Reset form fields to default values
+        const resetForm = () => {
+            document.getElementById('task-id').value = '';
+            document.getElementById('task-title').value = '';
+            document.getElementById('task-description').value = '';
+            document.getElementById('task-priority').value = PRIORITY.MEDIUM;
+            document.getElementById('task-assignee').value = '';
+            document.getElementById('task-due-date').value = '';
+            document.getElementById('task-hours').value = '0';
+            document.getElementById('task-minutes').value = '0';
+            document.getElementById('task-seconds').value = '0';
+            elements.deleteTaskBtn.style.display = 'none';
+            elements.modalTitle.textContent = 'Yeni Görev';
+        };
+        
+        // Create a task card element
+        const createTaskCardElement = (task) => {
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.id = `task-${task.id}`;
+            card.setAttribute('draggable', 'true');
+            card.dataset.id = task.id;
+            
+            // Set inner HTML using pure function
+            card.innerHTML = createTaskCardHTML(task);
+            
+            // Add drag event listeners
+            card.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', task.id);
+                setTimeout(() => {
+                    card.classList.add('dragging');
+                }, 0);
+            });
+            
+            card.addEventListener('dragend', () => {
+                card.classList.remove('dragging');
+            });
+            
+            return card;
+        };
+        
+        // Render tasks to the board
+        const renderTasks = () => {
+            // Clear task containers
+            Object.values(elements.taskContainers).forEach(container => {
+                container.innerHTML = '';
+            });
+            
+            const tasks = appState.getTasks();
+            const searchTerm = elements.taskSearch.value.toLowerCase();
+            const priorityFilter = elements.priorityFilter.value;
+            
+            // Filter and group tasks by status using pure functions
+            const filteredTasks = filterTasks(tasks, searchTerm, priorityFilter);
+            const groupedTasks = groupTasksByStatus(filteredTasks);
+            
+            // Render tasks in each column
+            Object.entries(groupedTasks).forEach(([status, statusTasks]) => {
+                const container = elements.taskContainers[status];
+                const countElement = elements.columnCounts[status];
+                
+                statusTasks.forEach(task => {
+                    const taskElement = createTaskCardElement(task);
+                    container.appendChild(taskElement);
+                });
+                
+                // Update column count
+                countElement.textContent = statusTasks.length;
+            });
+        };
+        
+        // Show task modal for adding/editing
+        const showTaskModal = () => {
+            elements.taskModal.style.display = 'block';
+        };
+        
+        // Hide task modal
+        const hideTaskModal = () => {
+            elements.taskModal.style.display = 'none';
+            resetForm();
+        };
+        
+        // Add a new task
+        const addTask = (event) => {
+            event.preventDefault();
+            
+            const formData = getFormData();
+            const newTask = createTaskObject(formData);
+            
+            if (formData.id) {
+                // Update existing task
+                const existingTask = appState.getTaskById(formData.id);
+                if (existingTask) {
+                    // Handle timer state
+                    appState.clearTimer(existingTask.id);
+                    
+                    // Preserve status
+                    newTask.status = existingTask.status;
+                    
+                    // If duration changed, reset timer
+                    if (newTask.totalSeconds !== existingTask.totalSeconds) {
+                        newTask.remainingSeconds = newTask.totalSeconds;
+                        newTask.timerRunning = false;
+                        newTask.timerCompleted = false;
+                    } else {
+                        newTask.remainingSeconds = existingTask.remainingSeconds;
+                        newTask.timerRunning = existingTask.timerRunning;
+                        newTask.timerCompleted = existingTask.timerCompleted;
+                    }
+                    
+                    // Update task
+                    appState.updateTask(newTask);
+                    
+                    // Restart timer if it was running
+                    if (newTask.timerRunning) {
+                        startTaskTimer(newTask.id);
+                    }
+                }
+            } else {
+                // Add new task
+                appState.addTask(newTask);
+            }
+            
+            saveTasks();
+            renderTasks();
+            hideTaskModal();
+        };
+        
+        // Start task timer
+        const startTaskTimer = (taskId) => {
+            const task = appState.getTaskById(taskId);
+            if (!task) return;
+            
+            // If timer is already completed, don't restart
+            if (task.timerCompleted) return;
+            
+            // Clear existing timer if any
+            appState.clearTimer(taskId);
+            
+            // Create updated task with timer running
+            const updatedTask = { 
+                ...task,
+                timerRunning: true,
+                // Automatically move to in-progress when timer starts
+                status: STATUS.IN_PROGRESS
+            };
+            
+            // Update state
+            appState.updateTask(updatedTask);
+            
+            // Start the countdown interval
+            const timerId = setInterval(() => {
+                const currentTask = appState.getTaskById(taskId);
+                if (!currentTask || !currentTask.timerRunning) return;
+                
+                if (currentTask.remainingSeconds <= 0) {
+                    completeTaskTimer(taskId);
+                    return;
+                }
+                
+                // Create updated task with decremented time
+                const updatedTask = { 
+                    ...currentTask,
+                    remainingSeconds: currentTask.remainingSeconds - 1 
+                };
+                
+                // Update state
+                appState.updateTask(updatedTask);
+                updateTaskTimerDisplay(updatedTask);
+                saveTasks();
+            }, 1000);
+            
+            // Store timer ID
+            appState.setTimer(taskId, timerId);
+            
+            // Update display
+            updateTaskTimerDisplay(updatedTask);
+            saveTasks();
+            
+            // Re-render tasks to reflect status change
+            renderTasks();
+        };
+        
+        // Pause task timer
+        const pauseTaskTimer = (taskId) => {
+            const task = appState.getTaskById(taskId);
+            if (!task || !task.timerRunning) return;
+            
+            // Clear interval
+            appState.clearTimer(taskId);
+            
+            // Create updated task with timer paused
+            const updatedTask = { 
+                ...task,
+                timerRunning: false 
+                // Status remains in-progress when paused
+            };
+            
+            // Update state
+            appState.updateTask(updatedTask);
+            updateTaskTimerDisplay(updatedTask);
+            saveTasks();
+        };
+        
+        // Reset task timer
+        const resetTaskTimer = (taskId) => {
+            const task = appState.getTaskById(taskId);
+            if (!task) return;
+            
+            // Clear interval
+            appState.clearTimer(taskId);
+            
+            // Create reset task
+            const updatedTask = { 
+                ...task,
+                remainingSeconds: task.totalSeconds,
+                timerRunning: false,
+                timerCompleted: false
+            };
+            
+            // Update state
+            appState.updateTask(updatedTask);
+            updateTaskTimerDisplay(updatedTask);
+            saveTasks();
+        };
+        
+        // Complete task timer
+        const completeTaskTimer = (taskId) => {
+            const task = appState.getTaskById(taskId);
+            if (!task) return;
+            
+            // Clear interval
+            appState.clearTimer(taskId);
+            
+            // Create completed task
+            const updatedTask = { 
+                ...task,
+                remainingSeconds: 0,
+                timerRunning: false,
+                timerCompleted: true,
+                status: STATUS.DONE  // Automatically move to done
+            };
+            
+            // Update state
+            appState.updateTask(updatedTask);
+            
+            // Render tasks to move to done column
+            renderTasks();
+            
+            // Play sound
+            playCompletionSound();
+            
+            // Show notification if allowed
+            showNotification(`Görev tamamlandı: ${task.title}`, 'Belirlenen süre doldu!');
+            
+            saveTasks();
+        };
+        
+        // Play sound when timer completes
+        const playCompletionSound = () => {
+            try {
+                const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-alert-bells-echo-765.mp3');
+                audio.play();
+            } catch (e) {
+                console.log('Audio play failed:', e);
+            }
+        };
+        
+        // Show browser notification
+        const showNotification = (title, body) => {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, {
+                    icon: 'images/logo.svg',
+                    body: body
+                });
+            } else if ('Notification' in window && Notification.permission !== 'denied') {
+                Notification.requestPermission();
+            }
+        };
+        
+        // Update task timer display
+        const updateTaskTimerDisplay = (task) => {
+            const timerElement = document.getElementById(`timer-${task.id}`);
+            if (!timerElement) return;
+            
+            const { hours, minutes, seconds } = secondsToTimeUnits(task.remainingSeconds);
+            timerElement.textContent = formatTime(hours, minutes, seconds);
+            
+            // Update timer status classes
+            timerElement.classList.remove('running', 'completed', 'ending');
+            
+            if (task.timerCompleted) {
+                timerElement.classList.add('completed');
+            } else if (task.timerRunning) {
+                timerElement.classList.add('running');
+                
+                // Add ending class if less than 10 seconds remain
+                if (task.remainingSeconds <= 10) {
+                    timerElement.classList.add('ending');
+                }
+            }
+        };
+        
+        // Edit an existing task
+        const editTask = (taskId) => {
+            const task = appState.getTaskById(taskId);
+            if (!task) return;
+            
+            document.getElementById('task-id').value = task.id;
+            document.getElementById('task-title').value = task.title;
+            document.getElementById('task-description').value = task.description;
+            document.getElementById('task-priority').value = task.priority;
+            document.getElementById('task-assignee').value = task.assignee || '';
+            document.getElementById('task-due-date').value = task.dueDate || '';
+            document.getElementById('task-hours').value = task.duration.hours;
+            document.getElementById('task-minutes').value = task.duration.minutes;
+            document.getElementById('task-seconds').value = task.duration.seconds;
+            
+            elements.deleteTaskBtn.style.display = 'block';
+            elements.modalTitle.textContent = 'Görevi Düzenle';
+            
+            showTaskModal();
+        };
+        
+        // Delete a task
+        const deleteTask = () => {
+            const taskId = document.getElementById('task-id').value;
+            if (!taskId) return;
+            
+            if (confirm('Bu görevi silmek istediğinize emin misiniz?')) {
+                // Clear timer if running
+                appState.clearTimer(taskId);
+                
+                // Remove task
+                appState.removeTask(taskId);
+                saveTasks();
+                renderTasks();
+                hideTaskModal();
+            }
+        };
+        
+        // Change task status (for drag and drop or programmatic change)
+        const changeTaskStatus = (taskId, newStatus) => {
+            const task = appState.getTaskById(taskId);
+            if (!task || task.status === newStatus) return;
+            
+            // Create updated task with new status
+            const updatedTask = { 
+                ...task,
+                status: newStatus,
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Handle timer state changes based on column
+            if (newStatus === STATUS.IN_PROGRESS) {
+                // Check if this task has a timer and should be started
+                if (task.totalSeconds > 0 && 
+                    !task.timerRunning && 
+                    !task.timerCompleted) {
+                    // Start timer automatically when moved to in-progress
+                    updatedTask.timerRunning = true;
+                }
+            } else if (newStatus === STATUS.DONE) {
+                // If moved to done column
+                if (task.timerRunning) {
+                    // Stop and complete timer if it was running
+                    updatedTask.timerRunning = false;
+                    updatedTask.timerCompleted = true;
+                    updatedTask.remainingSeconds = 0;
+                    appState.clearTimer(taskId);
+                }
+            } else if (newStatus === STATUS.TODO) {
+                // If moved back to todo, pause timer but don't reset it
+                if (task.timerRunning) {
+                    updatedTask.timerRunning = false;
+                    appState.clearTimer(taskId);
+                }
+            }
+            
+            // Update state
+            appState.updateTask(updatedTask);
+            
+            // Start timer if needed
+            if (newStatus === STATUS.IN_PROGRESS && updatedTask.timerRunning) {
+                // We need to start the timer after the state is updated
+                setTimeout(() => startTaskTimer(taskId), 0);
+            }
+            
+            saveTasks();
+            renderTasks();
+        };
+        
+        // Add task button click handler
+        const addTaskButtonClick = () => {
+            resetForm();
+            showTaskModal();
+        };
+
+        // Handle task form submission
+        const handleTaskFormSubmit = (event) => {
+            event.preventDefault();
+            addTask(event);
+        };
+
+        // Set up event listeners
+        const setupEventListeners = () => {
+            // Add task button
+            elements.addTaskBtn.addEventListener('click', addTaskButtonClick);
+            
+            // Close modal buttons
+            elements.modalClose.addEventListener('click', hideTaskModal);
+            elements.cancelBtn.addEventListener('click', hideTaskModal);
+            
+            // Form submission
+            elements.taskForm.addEventListener('submit', handleTaskFormSubmit);
+            
+            // Delete task button
+            elements.deleteTaskBtn.addEventListener('click', deleteTask);
+            
+            // Search and filter
+            elements.taskSearch.addEventListener('input', renderTasks);
+            elements.priorityFilter.addEventListener('change', renderTasks);
+            
+            // Prevent form submission on enter in text inputs
+            document.querySelectorAll('.form-control').forEach(input => {
+                if (input.type === 'text' || input.type === 'number') {
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' && input.type !== 'textarea') {
+                            e.preventDefault();
+                        }
+                    });
+                }
+            });
+
+            // Handle keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                // Escape key closes modal
+                if (e.key === 'Escape' && elements.taskModal.style.display === 'block') {
+                    hideTaskModal();
+                }
+                
+                // N key opens new task modal when not in another input
+                if (e.key === 'n' && document.activeElement.tagName !== 'INPUT' && 
+                    document.activeElement.tagName !== 'TEXTAREA' && 
+                    elements.taskModal.style.display !== 'block') {
+                    addTaskButtonClick();
+                }
+            });
+        };
+        
+        // Request notification permission
+        const requestNotificationPermission = () => {
+            if ('Notification' in window && Notification.permission !== 'denied') {
+                Notification.requestPermission();
+            }
+        };
+        
+        // Clean up function to be called on page unload
+        const cleanUp = () => {
+            appState.clearAllTimers();
+        };
+        
+        // Initialize drag and drop functionality
+        const initDragAndDrop = () => {
+            const columns = document.querySelectorAll('.board-column');
+            
+            columns.forEach(column => {
+                column.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    column.classList.add('drag-over');
+                });
+                
+                column.addEventListener('dragleave', () => {
+                    column.classList.remove('drag-over');
+                });
+                
+                column.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    column.classList.remove('drag-over');
+                    
+                    const taskId = e.dataTransfer.getData('text/plain');
+                    const newStatus = column.dataset.status;
+                    
+                    changeTaskStatus(taskId, newStatus);
+                });
+            });
+        };
+
+        // Initialize the application
+        const init = () => {
+            loadTasks();
+            setupEventListeners();
+            initDragAndDrop();
+            requestNotificationPermission();
+            
+            // Add cleanup on page unload
+            window.addEventListener('beforeunload', cleanUp);
+        };
+        
+        // Make functions globally available
+        window.startTaskTimer = startTaskTimer;
+        window.pauseTaskTimer = pauseTaskTimer;
+        window.resetTaskTimer = resetTaskTimer;
+        window.editTask = editTask;
+        
+        // Start the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html> 
